@@ -2,7 +2,8 @@
 
 ## 출처
 
+- youtube
+
 ```
--- youtube
 https://www.youtube.com/watch?v=ZGOaCxX8HIU&list=WL&index=20&t=198s
 ```
