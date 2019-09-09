@@ -9,6 +9,7 @@ import { StyledTetris, StyledTetrisWrapper } from "./styles/StyledTetirs";
 import { useInterval } from "../hooks/useInterval";
 import { usePlayer } from "../hooks/usePlayer";
 import { useStage } from "../hooks/useStage";
+import { useGameStatus } from "../hooks/useGameStatus";
 
 //component
 import Stage from "./Stage";
@@ -21,8 +22,9 @@ const Tetris = () => {
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
   const [stage, setStage, rowCleared] = useStage(player, resetPlayer);
-
-  console.log("re-render");
+  const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(
+    rowCleared
+  );
 
   const movePlayer = dir => {
     if (!checkCollision(player, stage, { x: dir, y: 0 })) {
@@ -31,15 +33,24 @@ const Tetris = () => {
   };
 
   const startGame = () => {
-    console.log("test");
     //Reset everything
     setDropTime(1000);
     setStage(createStage());
     resetPlayer();
     setGameOver(false);
+    setScore(0);
+    setRows(0);
+    setLevel(1);
   };
 
   const drop = () => {
+    // console.log(dropTime);
+    //Increase Level when player has cleared 10 rows
+    if (rows > level * 10) {
+      setLevel(prev => prev + 1);
+      //Also increase speed
+      setDropTime(1000 / level + 200);
+    }
     if (!checkCollision(player, stage, { x: 0, y: 1 })) {
       updatePlayerPos({ x: 0, y: 1, collided: false });
     } else {
@@ -56,7 +67,7 @@ const Tetris = () => {
     if (!gameOver) {
       if (keyCode === 40) {
         console.log("interval on");
-        setDropTime(1000);
+        setDropTime(1000 / level + 200);
       }
     }
   };
@@ -101,9 +112,9 @@ const Tetris = () => {
             <Display gameOver={gameOver} text={"Game Over"} />
           ) : (
             <div>
-              <Display text="Score" />
-              <Display text="Rows" />
-              <Display text="Level" />
+              <Display text={`Score : ${score}`} />
+              <Display text={`Rows : ${rows}`} />
+              <Display text={`Level : ${level}`} />
             </div>
           )}
           <StartButton callback={startGame} />
