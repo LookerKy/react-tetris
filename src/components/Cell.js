@@ -4,11 +4,9 @@ import { TETROMIONS } from "../tetrominos";
 
 const Cell = ({ type }) => (
   <StyledCell
-    type={"L"}
-    color={TETROMIONS["L"].color}
-  >
-    cell
-  </StyledCell>
+    type={type}
+    color={TETROMIONS[type].color}
+  />
 );
 
 export default Cell;
